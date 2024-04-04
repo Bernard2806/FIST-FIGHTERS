@@ -24,8 +24,7 @@ namespace Clases___3_4
                 else
                 {
                     CrearPersonaje(Jugador);
-
-
+                    CrearPersonaje(Enemigo);
                 }
 
                 ResultadoBatalla(Jugador, Enemigo);
