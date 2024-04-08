@@ -53,7 +53,7 @@ namespace Clases___3_4
             while (Jugador.Vida > 0 && Enemigo.Vida > 0){
                 int x = MenuAcciones();
                 Acciones(Jugador, Enemigo, x);
-                Acciones(Enemigo, Jugador, 5);
+                Acciones(Enemigo, Jugador);
                 ResultadoBatalla(Jugador, Enemigo);
             }
             if (Jugador.Vida > 0)
@@ -83,7 +83,7 @@ namespace Clases___3_4
             Console.ReadKey();
             Console.Clear();
         }
-        static void Acciones(Personaje p1, Personaje p2, int sel)
+        static void Acciones(Personaje p1, Personaje p2, int sel = 6)
         {
             Console.Clear();
             switch (sel)
@@ -115,6 +115,9 @@ namespace Clases___3_4
                     Console.WriteLine("[" + p1.Nombre + "]: Incremento la Defensa");
                     p1.IncrementarDefensayFuerza();
                     break;
+                case 5:
+                    MenuDebug(p1);
+                    break;
                 default:
                     Acciones(p1, p2, EstRandom(1, 4));
                     break;
@@ -130,6 +133,7 @@ namespace Clases___3_4
             Console.WriteLine("[2] - Cambiar Color");
             Console.WriteLine("[3] - Recargar Mana");
             Console.WriteLine("[4] - Incrementar Defensa/Fuerza (-70 de Mana)");
+            Console.WriteLine("[5] - Debug Mode");
             return int.Parse(Console.ReadLine());
         }
         static void CrearPersonajeRandom(Personaje personaje)
@@ -148,7 +152,31 @@ namespace Clases___3_4
             Console.WriteLine("Fuerza: " + personaje.Fuerza);
             Console.WriteLine("Color: " + personaje.Color);
         }
-
+        static void MenuDebug(Personaje personaje) {
+            Console.Clear();
+            Console.WriteLine("//// Menu Debug ////");
+            Console.WriteLine("[1] - Cambiar Color");
+            Console.WriteLine("[2] - Recibir Daño");
+            Console.WriteLine("[3] - Atacar");
+            int Jose = int.Parse(Console.ReadLine());
+            Console.Clear();
+            switch (Jose) {
+                case 1:
+                    Console.WriteLine("Ingrese el Color del Personaje:");
+                    string Color = Console.ReadLine();
+                    personaje.CambiarColor(Color);
+                    personaje.Mana++;
+                    break;
+                case 2:
+                    Console.WriteLine("Ingrese el daño a recibir");
+                    int Daño = int.Parse(Console.ReadLine());
+                    personaje.RecibirDaño(Daño);
+                    break;
+                default:
+                    break;
+            }
+            return;
+        }
         static bool Menu()
         {
             Console.Clear();
@@ -174,7 +202,7 @@ namespace Clases___3_4
             return Condicion;
         }
         // Metodos de Generacion Random
-        static Random random = new Random(); // Esto desbugea
+        static Random random = new Random();
         static int EstRandom(int min = 1, int max = 100)
         {
             return random.Next(min, max);
