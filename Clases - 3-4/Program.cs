@@ -16,37 +16,39 @@ namespace Clases___3_4
             Personaje Jugador = new Personaje("Jugador");
             do
             {
-                if (Menu())
-                {
-                    CrearPersonajeRandom(Jugador);
-                    CrearPersonajeRandom(Enemigo);
-                }
-                else
-                {
-                    CrearPersonaje(Jugador);
-                    CrearPersonaje(Enemigo);
-                }
-
+                bool Option = Menu();
+                CrearPersonaje(Jugador, Option);
+                CrearPersonaje(Enemigo, Option);
                 ResultadoBatalla(Jugador, Enemigo);
                 VamoAJugar(Jugador, Enemigo);
                 Console.ReadKey();
             } while (true);
         }
-        static void CrearPersonaje(Personaje personaje)
+        static void CrearPersonaje(Personaje personaje, bool Selection)
         {
-            Console.Clear();
-            Console.WriteLine("Ingrese el Nombre del " + personaje.Nombre + ":");
-            personaje.Nombre = Console.ReadLine();
-            Console.WriteLine("Ingrese el Color (hexadecimal) de "+ personaje.Nombre + ":");
-            personaje.Color = Console.ReadLine();
-            Console.WriteLine("Ingrese la Vida de " + personaje.Nombre + ":");
-            personaje.Vida = int.Parse(Console.ReadLine());
-            Console.WriteLine("Ingrese la Defensa de " + personaje.Nombre + ":");
-            personaje.Defensa = int.Parse(Console.ReadLine());
-            Console.WriteLine("Ingrese la Fuerza de " + personaje.Nombre + ":");
-            personaje.Fuerza = int.Parse(Console.ReadLine());
-            Console.WriteLine("Ingrese el Mana de " + personaje.Nombre + ":");
-            personaje.Mana = int.Parse(Console.ReadLine());
+            if (Selection)
+            {
+                Console.Clear();
+                Console.WriteLine("Ingrese el Nombre del " + personaje.Nombre + ":");
+                personaje.Nombre = Console.ReadLine();
+                Console.WriteLine("Ingrese el Color (hexadecimal) de " + personaje.Nombre + ":");
+                personaje.Color = Console.ReadLine();
+                Console.WriteLine("Ingrese la Vida de " + personaje.Nombre + ":");
+                personaje.Vida = int.Parse(Console.ReadLine());
+                Console.WriteLine("Ingrese la Defensa de " + personaje.Nombre + ":");
+                personaje.Defensa = int.Parse(Console.ReadLine());
+                Console.WriteLine("Ingrese la Fuerza de " + personaje.Nombre + ":");
+                personaje.Fuerza = int.Parse(Console.ReadLine());
+                Console.WriteLine("Ingrese el Mana de " + personaje.Nombre + ":");
+                personaje.Mana = int.Parse(Console.ReadLine());
+            }
+            else {
+                personaje.Color = GenerateRandomHexColor();
+                personaje.Vida = 100;
+                personaje.Mana = 100;
+                personaje.Defensa = GenerateEstRandom();
+                personaje.Fuerza = GenerateEstRandom();
+            }
         }
         static void VamoAJugar(Personaje Jugador, Personaje Enemigo)
         {
@@ -69,8 +71,8 @@ namespace Clases___3_4
             Console.WriteLine("Desea volver a Jugar:");
             Console.WriteLine("[1] - Si");
             Console.WriteLine("[2] - No");
-            int zzz = int.Parse(Console.ReadLine());
-            if (zzz != 1) Environment.Exit(0);
+            int SeguirJugando = int.Parse(Console.ReadLine());
+            if (SeguirJugando != 1) Environment.Exit(0);
         }
         static void ResultadoBatalla(Personaje p1, Personaje p2)
         {
@@ -112,14 +114,14 @@ namespace Clases___3_4
                     p1.RecargarMana();
                     break;
                 case 4:
-                    Console.WriteLine("[" + p1.Nombre + "]: Incremento la Defensa");
-                    p1.IncrementarDefensayFuerza();
+                    Console.WriteLine("[" + p1.Nombre + "]: Incremento la Defensa / Fuerza");
+                    p1.AumentarEstadisticas();
                     break;
                 case 5:
                     MenuDebug(p1);
                     break;
                 default:
-                    Acciones(p1, p2, EstRandom(1, 4));
+                    Acciones(p1, p2, GenerateEstRandom(1, 4));
                     break;
             }
             Console.ReadKey();
@@ -136,14 +138,6 @@ namespace Clases___3_4
             Console.WriteLine("[5] - Debug Mode");
             return int.Parse(Console.ReadLine());
         }
-        static void CrearPersonajeRandom(Personaje personaje)
-        {
-            personaje.Color = GenerateRandomHexColor();
-            personaje.Vida = 100;
-            personaje.Mana = 100;
-            personaje.Defensa = EstRandom();
-            personaje.Fuerza = EstRandom();
-        }
         static void EstadisticasPersonaje(Personaje personaje)
         {
             Console.WriteLine("Vida: " + personaje.Vida);
@@ -158,9 +152,9 @@ namespace Clases___3_4
             Console.WriteLine("[1] - Cambiar Color");
             Console.WriteLine("[2] - Recibir Daño");
             Console.WriteLine("[3] - Atacar");
-            int Jose = int.Parse(Console.ReadLine());
+            int Selecion = int.Parse(Console.ReadLine());
             Console.Clear();
-            switch (Jose) {
+            switch (Selecion) {
                 case 1:
                     Console.WriteLine("Ingrese el Color del Personaje:");
                     string Color = Console.ReadLine();
@@ -203,7 +197,7 @@ namespace Clases___3_4
         }
         // Metodos de Generacion Random
         static Random random = new Random();
-        static int EstRandom(int min = 1, int max = 100)
+        static int GenerateEstRandom(int min = 1, int max = 100)
         {
             return random.Next(min, max);
         }

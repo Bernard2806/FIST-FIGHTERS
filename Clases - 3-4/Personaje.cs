@@ -60,7 +60,7 @@ namespace Clases___3_4
             Mana += 10;
         }
 
-        public void IncrementarDefensayFuerza()
+        public void AumentarEstadisticas()
         {
             if(Mana >= 50){
                 Mana -= 10;
