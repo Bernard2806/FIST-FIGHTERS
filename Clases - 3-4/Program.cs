@@ -28,26 +28,26 @@ namespace Clases___3_4
         {
             if (Selection)
             {
-                Console.Clear();
-                Console.WriteLine("Ingrese el Nombre del " + personaje.Nombre + ":");
-                personaje.Nombre = Console.ReadLine();
-                Console.WriteLine("Ingrese el Color (hexadecimal) de " + personaje.Nombre + ":");
-                personaje.Color = Console.ReadLine();
-                Console.WriteLine("Ingrese la Vida de " + personaje.Nombre + ":");
-                personaje.Vida = int.Parse(Console.ReadLine());
-                Console.WriteLine("Ingrese la Defensa de " + personaje.Nombre + ":");
-                personaje.Defensa = int.Parse(Console.ReadLine());
-                Console.WriteLine("Ingrese la Fuerza de " + personaje.Nombre + ":");
-                personaje.Fuerza = int.Parse(Console.ReadLine());
-                Console.WriteLine("Ingrese el Mana de " + personaje.Nombre + ":");
-                personaje.Mana = int.Parse(Console.ReadLine());
-            }
-            else {
                 personaje.Color = GenerateRandomHexColor();
                 personaje.Vida = 100;
                 personaje.Mana = 100;
                 personaje.Defensa = GenerateEstRandom();
                 personaje.Fuerza = GenerateEstRandom();
+            }
+            else {
+                Console.Clear();
+                Console.WriteLine($"Ingrese el Nombre del {personaje.Nombre}:");
+                personaje.Nombre = Console.ReadLine();
+                Console.WriteLine($"Ingrese el Color (hexadecimal) de {personaje.Nombre}:");
+                personaje.Color = Console.ReadLine();
+                Console.WriteLine($"Ingrese la Vida de {personaje.Nombre}:");
+                personaje.Vida = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese la Defensa de {personaje.Nombre}:");
+                personaje.Defensa = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese la Fuerza de {personaje.Nombre}:");
+                personaje.Fuerza = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese el Mana de {personaje.Nombre}:");
+                personaje.Mana = int.Parse(Console.ReadLine());
             }
         }
         static void VamoAJugar(Personaje Jugador, Personaje Enemigo)
@@ -77,10 +77,8 @@ namespace Clases___3_4
         static void ResultadoBatalla(Personaje p1, Personaje p2)
         {
             Console.Clear();
-            Console.WriteLine("Estadisticas del " + p1.Nombre);
             EstadisticasPersonaje(p1);
             Console.WriteLine();
-            Console.WriteLine("Estadisticas del " + p2.Nombre);
             EstadisticasPersonaje(p2);
             Console.ReadKey();
             Console.Clear();
@@ -91,30 +89,30 @@ namespace Clases___3_4
             switch (sel)
             {
                 case 0:
-                    Console.WriteLine("[" + p1.Nombre + "]: Se ha rendido");
+                    Console.WriteLine($"[{p1.Nombre}]: Se ha rendido.");
+                    p1.Vida = 0;
                     Console.ReadKey();
-                    Environment.Exit(0);
                     break;
                 case 1:
                     if (p1.Atacar(p2))
                     {
-                        Console.WriteLine("[" + p1.Nombre + "]: " + "Ataque Efectivo");
+                        Console.WriteLine($"[{p1.Nombre}]: Su Ataque Fue Efectivo.");
                     }
                     else
                     {
-                        Console.WriteLine("[" + p1.Nombre + "]: " + "Ataque Inefectivo");
+                        Console.WriteLine($"[{p1.Nombre}]: Su Ataque Fue Inefectivo.");
                     }
                     break;
                 case 2:
-                    Console.WriteLine("El " + p1.Nombre + " a Cambiado de Color");
+                    Console.WriteLine($"[{p1.Nombre}]: Cambio de Color.");
                     p1.CambiarColor(GenerateRandomHexColor());
                     break;
                 case 3:
-                    Console.WriteLine("["+p1.Nombre+"]: Recargo Mana");
+                    Console.WriteLine($"[{p1.Nombre}]: Recargo Mana.");
                     p1.RecargarMana();
                     break;
                 case 4:
-                    Console.WriteLine("[" + p1.Nombre + "]: Incremento la Defensa / Fuerza");
+                    Console.WriteLine($"[{p1.Nombre}]: Incremento su Defensa y Fuerza.");
                     p1.AumentarEstadisticas();
                     break;
                 case 5:
@@ -130,7 +128,7 @@ namespace Clases___3_4
         {
             Console.Clear();
             Console.WriteLine("Acciones:");
-            Console.WriteLine("[0] - Irse de las mil Batallas");
+            Console.WriteLine("[0] - Rendirse");
             Console.WriteLine("[1] - Atacar");
             Console.WriteLine("[2] - Cambiar Color");
             Console.WriteLine("[3] - Recargar Mana");
@@ -140,18 +138,18 @@ namespace Clases___3_4
         }
         static void EstadisticasPersonaje(Personaje personaje)
         {
-            Console.WriteLine("Vida: " + personaje.Vida);
-            Console.WriteLine("Mana: " + personaje.Mana);
-            Console.WriteLine("Defensa: " + personaje.Defensa);
-            Console.WriteLine("Fuerza: " + personaje.Fuerza);
-            Console.WriteLine("Color: " + personaje.Color);
+            Console.WriteLine($"Estadisticas del {personaje.Nombre}");
+            Console.WriteLine($"Vida: {personaje.Vida.ToString()}");
+            Console.WriteLine($"Mana: {personaje.Mana.ToString()}");
+            Console.WriteLine($"Defensa: {personaje.Defensa.ToString()}");
+            Console.WriteLine($"Fuerza: {personaje.Fuerza.ToString()}");
+            Console.WriteLine($"Color: {personaje.Color}");
         }
         static void MenuDebug(Personaje personaje) {
             Console.Clear();
             Console.WriteLine("//// Menu Debug ////");
             Console.WriteLine("[1] - Cambiar Color");
             Console.WriteLine("[2] - Recibir Daño");
-            Console.WriteLine("[3] - Atacar");
             int Selecion = int.Parse(Console.ReadLine());
             Console.Clear();
             switch (Selecion) {

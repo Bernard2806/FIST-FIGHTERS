@@ -62,8 +62,8 @@ namespace Clases___3_4
 
         public void AumentarEstadisticas()
         {
-            if(Mana >= 50){
-                Mana -= 10;
+            if(Mana >= 70){
+                Mana -= 70;
                 Defensa += 10;
                 Fuerza += 10;
             }
