@@ -1,4 +1,4 @@
-#Bernardo Gonzalez - 7to B
+# Bernardo Gonzalez - 7to B
 ---
 # Practica de Clases en Consola 1
 ## Actividades
