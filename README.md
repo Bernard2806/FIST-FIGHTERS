@@ -1,5 +1,4 @@
-# Bernardo Gonzalez - 7to B
----
+# __Bernardo Gonzalez - 7to B__ #
 # Practica de Clases en Consola 1
 ## Actividades
 - Cambiar de color, el usuario tambien deberá ingresar el color al que desea cambiar
