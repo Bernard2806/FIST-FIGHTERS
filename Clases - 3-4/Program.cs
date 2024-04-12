@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 namespace Clases___3_4
 {
     internal class Program
-    { 
+    {
+        static PocionBase pocion = null;
         static void Main(string[] args)
         {
+
             //Creacion de los Personajes
             Personaje Enemigo = new Personaje("Enemigo");
             Personaje Jugador = new Personaje("Jugador");
+
             do
             {
                 bool Option = Menu();
@@ -49,6 +52,8 @@ namespace Clases___3_4
                 Console.WriteLine($"Ingrese el Mana de {personaje.Nombre}:");
                 personaje.Mana = int.Parse(Console.ReadLine());
             }
+            personaje.ManaMax = personaje.Mana;
+            personaje.VidaMax = personaje.Vida;
         }
         static void VamoAJugar(Personaje Jugador, Personaje Enemigo)
         {
@@ -83,7 +88,7 @@ namespace Clases___3_4
             Console.ReadKey();
             Console.Clear();
         }
-        static void Acciones(Personaje p1, Personaje p2, int sel = 6)
+        static void Acciones(Personaje p1, Personaje p2, int sel = 23)
         {
             Console.Clear();
             switch (sel)
@@ -104,18 +109,36 @@ namespace Clases___3_4
                     }
                     break;
                 case 2:
-                    Console.WriteLine($"[{p1.Nombre}]: Cambio de Color.");
+                    Console.WriteLine($"[{p1.Nombre}]: Cambio de Color ({p1.Color}).");
                     p1.CambiarColor(GenerateRandomHexColor());
                     break;
                 case 3:
-                    Console.WriteLine($"[{p1.Nombre}]: Recargo Mana.");
+                    Console.WriteLine($"[{p1.Nombre}]: Recargo Mana (+10).");
                     p1.RecargarMana();
                     break;
                 case 4:
-                    Console.WriteLine($"[{p1.Nombre}]: Incremento su Defensa y Fuerza.");
+                    Console.WriteLine($"[{p1.Nombre}]: Incremento su Defensa a {p1.Defensa} y Fuerza a {p1.Fuerza}.");
                     p1.AumentarEstadisticas();
                     break;
                 case 5:
+                    if (pocion != null)
+                    {
+                        Console.WriteLine($"[{p1.Nombre}]: Utilizo una Pocion");
+                        if (pocion.Usar(p1))
+                        {
+                            pocion = null; // Se borra la pocion
+                        }
+                        else
+                        {
+                            Console.WriteLine($"[{p1.Nombre}]: La Pocion no fue Utilizada el Mana o la Vida ya estan al maximo");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No tienes ninguna Pocion");
+                    }
+                    break;
+                case 6:
                     MenuDebug(p1);
                     break;
                 default:
@@ -133,14 +156,15 @@ namespace Clases___3_4
             Console.WriteLine("[2] - Cambiar Color");
             Console.WriteLine("[3] - Recargar Mana");
             Console.WriteLine("[4] - Incrementar Defensa/Fuerza (-70 de Mana)");
-            Console.WriteLine("[5] - Debug Mode");
+            Console.WriteLine("[5] - Usar una Pocion");
+            Console.WriteLine("[6] - Debug Mode");
             return int.Parse(Console.ReadLine());
         }
         static void EstadisticasPersonaje(Personaje personaje)
         {
             Console.WriteLine($"Estadisticas del {personaje.Nombre}");
-            Console.WriteLine($"Vida: {personaje.Vida.ToString()}");
-            Console.WriteLine($"Mana: {personaje.Mana.ToString()}");
+            Console.WriteLine($"Vida: {personaje.Vida.ToString()} / {personaje.VidaMax.ToString()}");
+            Console.WriteLine($"Mana: {personaje.Mana.ToString()} / {personaje.ManaMax.ToString()}");
             Console.WriteLine($"Defensa: {personaje.Defensa.ToString()}");
             Console.WriteLine($"Fuerza: {personaje.Fuerza.ToString()}");
             Console.WriteLine($"Color: {personaje.Color}");
@@ -150,6 +174,7 @@ namespace Clases___3_4
             Console.WriteLine("//// Menu Debug ////");
             Console.WriteLine("[1] - Cambiar Color");
             Console.WriteLine("[2] - Recibir Daño");
+            Console.WriteLine("[3] - Generar Pociones");
             int Selecion = int.Parse(Console.ReadLine());
             Console.Clear();
             switch (Selecion) {
@@ -163,6 +188,11 @@ namespace Clases___3_4
                     Console.WriteLine("Ingrese el daño a recibir");
                     int Daño = int.Parse(Console.ReadLine());
                     personaje.RecibirDaño(Daño);
+                    break;
+                case 3:
+                    Console.WriteLine("Ingrese el tipo de la Pocion (Vida / Mana)");
+                    bool TipoP = Console.ReadLine().ToLower() == "vida";
+                    pocion = CrearPocion(TipoP);
                     break;
                 default:
                     break;
@@ -197,6 +227,7 @@ namespace Clases___3_4
         static Random random = new Random();
         static int GenerateEstRandom(int min = 1, int max = 100)
         {
+            max++;
             return random.Next(min, max);
         }
         static string GenerateRandomHexColor(){
@@ -204,6 +235,26 @@ namespace Clases___3_4
             random.NextBytes(colorBytes);
             return $"#{colorBytes[0]:X2}{colorBytes[1]:X2}{colorBytes[2]:X2}";
         }
+
+        static PocionBase CrearPocion(bool tipo)
+        {
+            Console.WriteLine("Ingrese el Minimo a curar de la pocion:");
+            int min = int.Parse(Console.ReadLine());
+            Console.WriteLine("Ingrese el Maximo a curar de la pocion:");
+            int max = int.Parse(Console.ReadLine());
+
+            if (tipo)
+            {
+                PocionVida pocionVida = new PocionVida (min, max);
+                return pocionVida;
+            }
+            else
+            {
+                PocionMana pocionMana = new PocionMana (min, max);
+                return pocionMana;
+            }
+        }
+
 
     }
 }

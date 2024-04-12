@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace Clases___3_4
 {
-    internal class Personaje
+    public class Personaje
     {
+
         public string Nombre { get; set; }
         public string Color { get; set; }
         public int Vida { get; set; }
         public int Defensa { get; set; }
         public int Fuerza { get; set; }
         public int Mana { get; set; }
-        
+        public int VidaMax { get; set; }
+        public int ManaMax { get; set; }
 
         public Personaje(string nombre) {
             Nombre = nombre;
