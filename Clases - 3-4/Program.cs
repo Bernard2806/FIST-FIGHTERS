@@ -9,7 +9,6 @@ namespace Clases___3_4
 {
     internal class Program
     {
-        static PocionBase pocion = null;
         static void Main(string[] args)
         {
 
@@ -121,16 +120,16 @@ namespace Clases___3_4
                     p1.AumentarEstadisticas();
                     break;
                 case 5:
-                    if (pocion != null)
+                    if (p1.Pocion != null)
                     {
-                        Console.WriteLine($"[{p1.Nombre}]: Utilizo una Pocion");
-                        if (pocion.Usar(p1))
+                        if (p1.Pocion.Usar(p1))
                         {
-                            pocion = null; // Se borra la pocion
+                            Console.WriteLine($"[{p1.Nombre}]: Utilizo una Pocion");
+                            p1.Pocion = null; // Se borra la pocion
                         }
                         else
                         {
-                            Console.WriteLine($"[{p1.Nombre}]: La Pocion no fue Utilizada el Mana o la Vida ya estan al maximo");
+                            Console.WriteLine($"[{p1.Nombre}]: La poción no se pudo usar.");
                         }
                     }
                     else
@@ -192,7 +191,7 @@ namespace Clases___3_4
                 case 3:
                     Console.WriteLine("Ingrese el tipo de la Pocion (Vida / Mana)");
                     bool TipoP = Console.ReadLine().ToLower() == "vida";
-                    pocion = CrearPocion(TipoP);
+                    personaje.Pocion = CrearPocion(TipoP);
                     break;
                 default:
                     break;
