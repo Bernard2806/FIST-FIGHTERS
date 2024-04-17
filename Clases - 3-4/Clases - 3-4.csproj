@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Personaje.cs" />
-    <Compile Include="Pociones.cs" />
+    <Compile Include="PocionBase.cs" />
+    <Compile Include="PocionMana.cs" />
+    <Compile Include="PocionVida.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
