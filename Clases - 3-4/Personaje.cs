@@ -61,7 +61,11 @@ namespace Clases___3_4
         }
 
         public void RecargarMana() {
-            Mana += 10;
+            if (Mana >= ManaMax)
+            {
+                Mana = ManaMax;
+            }
+            else Mana += 10;
         }
 
         public void AumentarEstadisticas()

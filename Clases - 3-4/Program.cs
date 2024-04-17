@@ -57,8 +57,7 @@ namespace Clases___3_4
         static void VamoAJugar(Personaje Jugador, Personaje Enemigo)
         {
             while (Jugador.Vida > 0 && Enemigo.Vida > 0){
-                int x = MenuAcciones();
-                Acciones(Jugador, Enemigo, x);
+                Acciones(Jugador, Enemigo, MenuAcciones());
                 Acciones(Enemigo, Jugador);
                 ResultadoBatalla(Jugador, Enemigo);
             }
@@ -124,7 +123,7 @@ namespace Clases___3_4
                     {
                         if (p1.Pocion.Usar(p1))
                         {
-                            Console.WriteLine($"[{p1.Nombre}]: Utilizo una Pocion");
+                            Console.WriteLine($"[{p1.Nombre}]: Utilzo una poción.");
                             p1.Pocion = null; // Se borra la pocion
                         }
                         else
@@ -134,14 +133,14 @@ namespace Clases___3_4
                     }
                     else
                     {
-                        Console.WriteLine("No tienes ninguna Pocion");
+                        Console.WriteLine($"[{p1.Nombre}]: No tiene niguna poción.");
                     }
                     break;
                 case 6:
-                    MenuDebug(p1);
+                    MenuDebug(p1, p2);
                     break;
                 default:
-                    Acciones(p1, p2, GenerateEstRandom(1, 4));
+                    Acciones(p1, p2, GenerateEstRandom(1, 5));
                     break;
             }
             Console.ReadKey();
@@ -168,7 +167,7 @@ namespace Clases___3_4
             Console.WriteLine($"Fuerza: {personaje.Fuerza.ToString()}");
             Console.WriteLine($"Color: {personaje.Color}");
         }
-        static void MenuDebug(Personaje personaje) {
+        static void MenuDebug(Personaje personaje, Personaje enemigo) {
             Console.Clear();
             Console.WriteLine("//// Menu Debug ////");
             Console.WriteLine("[1] - Cambiar Color");
@@ -189,9 +188,19 @@ namespace Clases___3_4
                     personaje.RecibirDaño(Daño);
                     break;
                 case 3:
-                    Console.WriteLine("Ingrese el tipo de la Pocion (Vida / Mana)");
+                    Console.WriteLine("Ingrese el tipo de la Pocion (Vida / Mana):");
                     bool TipoP = Console.ReadLine().ToLower() == "vida";
-                    personaje.Pocion = CrearPocion(TipoP);
+                    Console.WriteLine($"Ingrese a quien dar la Pocion ({personaje.Nombre} o {enemigo.Nombre}:");
+                    Console.Clear();
+                    if (Console.ReadLine().ToLower() == personaje.Nombre.ToLower())
+                    {
+                        personaje.Pocion = CrearPocion(TipoP);
+                        Console.WriteLine($"[{personaje.Nombre}]: Recibio una Poción.");
+                    }
+                    else {
+                        enemigo.Pocion = CrearPocion(TipoP);
+                        Console.WriteLine($"[{enemigo.Nombre}]: Recibio una Poción.");
+                    }
                     break;
                 default:
                     break;
