@@ -18,8 +18,7 @@ namespace Clases___3_4
         public int Mana { get; set; }
         public int VidaMax { get; set; }
         public int ManaMax { get; set; }
-
-        public PocionBase Pocion { get; set; }
+        public Inventario inventario { get; set; }
 
         public Personaje(string nombre) {
             Nombre = nombre;

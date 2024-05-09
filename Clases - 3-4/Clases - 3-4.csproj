@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Inventario.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="Personaje.cs" />
     <Compile Include="PocionBase.cs" />
     <Compile Include="PocionMana.cs" />

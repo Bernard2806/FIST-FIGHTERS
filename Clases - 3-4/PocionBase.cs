@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Clases___3_4
 {
-    public abstract class PocionBase
+    public abstract class PocionBase : Item
     { //Genere un clase abstracta.
         public int Min { get; set; }
         public int Max { get; set; }

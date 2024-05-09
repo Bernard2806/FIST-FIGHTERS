@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,6 +11,31 @@ namespace Clases___3_4
 {
     internal class Program
     {
+        private static string[] MenuAcciones = new string[] {
+            "Rendirse",
+            "Atacar",
+            "Cambiar Color",
+            "Recargar Mana",
+            "Incrementar Defensa/Fuerza (-70 de Mana)",
+            "Invetario",
+            "Debug Mode"
+        };
+
+        private static string[] ConditionalMenu = new string[] {
+            "Si",
+            "No",
+        };
+
+        private static string[] MenuDebugText = new string[] {
+            "Cambiar Color",
+            "Recibir Daño",
+            "Generar Pociones"
+        };
+
+        private static string[] PotionCreateMenu = new string[] {
+            "Vida",
+            "Mana"
+        };
         static void Main(string[] args)
         {
 
@@ -18,11 +45,14 @@ namespace Clases___3_4
 
             do
             {
-                bool Option = Menu();
+                bool Option = StartMenu();
+
                 CrearPersonaje(Jugador, Option);
                 CrearPersonaje(Enemigo, Option);
+
                 ResultadoBatalla(Jugador, Enemigo);
                 VamoAJugar(Jugador, Enemigo);
+
                 Console.ReadKey();
             } while (true);
         }
@@ -36,7 +66,8 @@ namespace Clases___3_4
                 personaje.Defensa = GenerateEstRandom();
                 personaje.Fuerza = GenerateEstRandom();
             }
-            else {
+            else
+            {
                 Console.Clear();
                 Console.WriteLine($"Ingrese el Nombre del {personaje.Nombre}:");
                 personaje.Nombre = Console.ReadLine();
@@ -51,13 +82,15 @@ namespace Clases___3_4
                 Console.WriteLine($"Ingrese el Mana de {personaje.Nombre}:");
                 personaje.Mana = int.Parse(Console.ReadLine());
             }
+            personaje.inventario = null;
             personaje.ManaMax = personaje.Mana;
             personaje.VidaMax = personaje.Vida;
         }
         static void VamoAJugar(Personaje Jugador, Personaje Enemigo)
         {
-            while (Jugador.Vida > 0 && Enemigo.Vida > 0){
-                Acciones(Jugador, Enemigo, MenuAcciones());
+            while (Jugador.Vida > 0 && Enemigo.Vida > 0)
+            {
+                Acciones(Jugador, Enemigo, MostrarMenu(MenuAcciones, "Seleccione la Accion a realizar:"));
                 Acciones(Enemigo, Jugador);
                 ResultadoBatalla(Jugador, Enemigo);
             }
@@ -71,11 +104,8 @@ namespace Clases___3_4
             }
             Console.ReadKey();
             Console.Clear();
-            Console.WriteLine("Desea volver a Jugar:");
-            Console.WriteLine("[1] - Si");
-            Console.WriteLine("[2] - No");
-            int SeguirJugando = int.Parse(Console.ReadLine());
-            if (SeguirJugando != 1) Environment.Exit(0);
+            int SeguirJugando = MostrarMenu(ConditionalMenu, "¿Desea volver a jugar?");
+            if (SeguirJugando != 0) Environment.Exit(0);
         }
         static void ResultadoBatalla(Personaje p1, Personaje p2)
         {
@@ -119,17 +149,9 @@ namespace Clases___3_4
                     p1.AumentarEstadisticas();
                     break;
                 case 5:
-                    if (p1.Pocion != null)
+                    if (p1.inventario.items != null)
                     {
-                        if (p1.Pocion.Usar(p1))
-                        {
-                            Console.WriteLine($"[{p1.Nombre}]: Utilzo una poción.");
-                            p1.Pocion = null; // Se borra la pocion
-                        }
-                        else
-                        {
-                            Console.WriteLine($"[{p1.Nombre}]: La poción no se pudo usar.");
-                        }
+                        int ObjID = MostrarMenu(MostrarInventario(p1.inventario, true), "Seleccione el Objeto a Utilizar:");
                     }
                     else
                     {
@@ -145,19 +167,6 @@ namespace Clases___3_4
             }
             Console.ReadKey();
         }
-        static int MenuAcciones()
-        {
-            Console.Clear();
-            Console.WriteLine("Acciones:");
-            Console.WriteLine("[0] - Rendirse");
-            Console.WriteLine("[1] - Atacar");
-            Console.WriteLine("[2] - Cambiar Color");
-            Console.WriteLine("[3] - Recargar Mana");
-            Console.WriteLine("[4] - Incrementar Defensa/Fuerza (-70 de Mana)");
-            Console.WriteLine("[5] - Usar una Pocion");
-            Console.WriteLine("[6] - Debug Mode");
-            return int.Parse(Console.ReadLine());
-        }
         static void EstadisticasPersonaje(Personaje personaje)
         {
             Console.WriteLine($"Estadisticas del {personaje.Nombre}");
@@ -166,39 +175,41 @@ namespace Clases___3_4
             Console.WriteLine($"Defensa: {personaje.Defensa.ToString()}");
             Console.WriteLine($"Fuerza: {personaje.Fuerza.ToString()}");
             Console.WriteLine($"Color: {personaje.Color}");
+            if (personaje.inventario != null) {
+                Console.Clear();
+                MostrarInventario(personaje.inventario);
+                Console.ReadKey();
+            }
         }
-        static void MenuDebug(Personaje personaje, Personaje enemigo) {
+        static void MenuDebug(Personaje personaje, Personaje enemigo)
+        {
+            int Selecion = MostrarMenu(MenuDebugText, "//// Menu Debug ////");
             Console.Clear();
-            Console.WriteLine("//// Menu Debug ////");
-            Console.WriteLine("[1] - Cambiar Color");
-            Console.WriteLine("[2] - Recibir Daño");
-            Console.WriteLine("[3] - Generar Pociones");
-            int Selecion = int.Parse(Console.ReadLine());
-            Console.Clear();
-            switch (Selecion) {
-                case 1:
+            switch (Selecion)
+            {
+                case 0:
                     Console.WriteLine("Ingrese el Color del Personaje:");
                     string Color = Console.ReadLine();
                     personaje.CambiarColor(Color);
                     personaje.Mana++;
                     break;
-                case 2:
+                case 1:
                     Console.WriteLine("Ingrese el daño a recibir");
                     int Daño = int.Parse(Console.ReadLine());
                     personaje.RecibirDaño(Daño);
                     break;
-                case 3:
-                    Console.WriteLine("Ingrese el tipo de la Pocion (Vida / Mana):");
-                    bool TipoP = Console.ReadLine().ToLower() == "vida";
-                    Console.WriteLine($"Ingrese a quien dar la Pocion ({personaje.Nombre} o {enemigo.Nombre}:");
-                    Console.Clear();
-                    if (Console.ReadLine().ToLower() == personaje.Nombre.ToLower())
+                case 2:
+                    bool TipoP = 0 == MostrarMenu(PotionCreateMenu, "Seleccione el tipo de Poción:");
+                    bool Player = 0 == MostrarMenu(new string[] {personaje.Nombre, enemigo.Nombre}, "Seleccione el Personaje el cual va a recibir la Poción:");
+                    
+                    if (Player)
                     {
-                        personaje.Pocion = CrearPocion(TipoP);
+                        personaje.inventario.AgregarItem(CrearPocion(TipoP));
                         Console.WriteLine($"[{personaje.Nombre}]: Recibio una Poción.");
                     }
-                    else {
-                        enemigo.Pocion = CrearPocion(TipoP);
+                    else
+                    {
+                        enemigo.inventario.AgregarItem(CrearPocion(TipoP));
                         Console.WriteLine($"[{enemigo.Nombre}]: Recibio una Poción.");
                     }
                     break;
@@ -207,7 +218,7 @@ namespace Clases___3_4
             }
             return;
         }
-        static bool Menu()
+        static bool StartMenu()
         {
             Console.Clear();
             string ASCIIMenu = @"
@@ -225,10 +236,7 @@ namespace Clases___3_4
             Console.WriteLine("Presione cualquier tecla para continuar...");
             Console.ReadKey();
             Console.Clear();
-            Console.WriteLine("Deseas Generar las Estadisticas Aleatoriamente");
-            Console.WriteLine("[1] - Si");
-            Console.WriteLine("[2] - No");
-            bool Condicion = 1 == int.Parse(Console.ReadLine());
+            bool Condicion = (0 == MostrarMenu(ConditionalMenu, "Deseas Generar las Estadisticas Aleatoriamente"));
             return Condicion;
         }
         // Metodos de Generacion Random
@@ -238,7 +246,8 @@ namespace Clases___3_4
             max++;
             return random.Next(min, max);
         }
-        static string GenerateRandomHexColor(){
+        static string GenerateRandomHexColor()
+        {
             byte[] colorBytes = new byte[3];
             random.NextBytes(colorBytes);
             return $"#{colorBytes[0]:X2}{colorBytes[1]:X2}{colorBytes[2]:X2}";
@@ -253,16 +262,95 @@ namespace Clases___3_4
 
             if (tipo)
             {
-                PocionVida pocionVida = new PocionVida (min, max);
+                PocionVida pocionVida = new PocionVida(min, max);
                 return pocionVida;
             }
             else
             {
-                PocionMana pocionMana = new PocionMana (min, max);
+                PocionMana pocionMana = new PocionMana(min, max);
                 return pocionMana;
             }
         }
 
+        static string[] MostrarInventario(Inventario inv, bool Devolver = false) {
+            if (Devolver)
+            {
+                int x = inv.items.Count;
+                string[] DesItem = new string[x];
+                x = 0;
+                foreach (Item item in inv.items)
+                {
+                    DesItem[x] = item.Descripcion;
+                    x++;
+                }
+                return DesItem;
+            }
+            else {
+                Console.WriteLine("Inventario:");
+                foreach (Item item in inv.items)
+                {
+                    Console.WriteLine($"> {item.Descripcion}");
+                }
+            }
+            return null;
+            
+        }
+
+        // Funcion de otro repositiorio de mi persona
+
+        static int MostrarMenu(string[] Opciones, string InitalText = "Seleccione una opción del menu:")
+        {
+            bool loop = true;
+            int counter = 0;
+            ConsoleKeyInfo Tecla;
+
+            Console.CursorVisible = false; // Con esto hacemos que el cursor no se muestre en consola
+
+            while (loop)
+            {
+                Console.Clear();
+                Console.WriteLine(InitalText + System.Environment.NewLine);
+                string SeleccionActual = string.Empty;
+                int Destacado = 0;
+
+                Array.ForEach(Opciones, element =>
+                {
+                    if (Destacado == counter)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.BackgroundColor = ConsoleColor.Red;
+                        Console.WriteLine(" > " + element + " < ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        SeleccionActual = element;
+                    }
+                    else
+                    {
+                        Console.WriteLine(element);
+                    }
+                    Destacado++;
+                });
+
+                Tecla = Console.ReadKey(true);
+                if (Tecla.Key == ConsoleKey.Enter)
+                {
+                    loop = false;
+                    break;
+                }
+                switch (Tecla.Key)
+                {
+                    case ConsoleKey.DownArrow:
+                        if (counter < Opciones.Length - 1) counter++;
+                        break;
+                    case ConsoleKey.UpArrow:
+                        if (counter > 0) counter--;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return counter;
+        }
 
     }
 }
