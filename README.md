@@ -30,8 +30,8 @@ En base a la actividad anterior vamos a agregarle a nuestros jugadores la posibi
 Teniendo en cuenta en el diagrama adjunto y lo visto en la clase anterior:
 - Crear la clase abstracta Item
 - Crear la clase Inventario
-   Implementar el método AgregarItem
-   Implementar el método QuitarItem
+    - Implementar el método AgregarItem
+    - Implementar el método QuitarItem
 - Modificar la herencia de la clase pocion para que sea hija de Item
 - Modificar el método CrearPersonaje para que cree un inventario
 - Modificar el método CrearPersonaje para que el usuario puede elegir una opción para guardar en el inventario del personaje
