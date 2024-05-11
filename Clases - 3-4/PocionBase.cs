@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace Clases___3_4
 {
-    public abstract class PocionBase : Item
+    public interface EsPocion
+    {
+        bool Usar(Personaje p);
+    }
+    public abstract class PocionBase : Item, EsPocion
     { //Genere un clase abstracta.
         public int Min { get; set; }
         public int Max { get; set; }

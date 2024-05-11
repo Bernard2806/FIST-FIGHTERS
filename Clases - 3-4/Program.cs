@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Clases___3_4
             "Cambiar Color",
             "Recargar Mana",
             "Incrementar Defensa/Fuerza (-70 de Mana)",
-            "Invetario",
+            "Inventario",
             "Debug Mode"
         };
 
@@ -40,7 +41,7 @@ namespace Clases___3_4
         {
 
             //Creacion de los Personajes
-            Personaje Enemigo = new Personaje("Enemigo");
+            Personaje Enemigo = new Personaje("Enemigo", true);
             Personaje Jugador = new Personaje("Jugador");
 
             do
@@ -56,35 +57,36 @@ namespace Clases___3_4
                 Console.ReadKey();
             } while (true);
         }
-        static void CrearPersonaje(Personaje personaje, bool Selection)
+        static void CrearPersonaje(Personaje per, bool Selection)
         {
             if (Selection)
             {
-                personaje.Color = GenerateRandomHexColor();
-                personaje.Vida = 100;
-                personaje.Mana = 100;
-                personaje.Defensa = GenerateEstRandom();
-                personaje.Fuerza = GenerateEstRandom();
+                per.Color = GenerateRandomHexColor();
+                per.Vida = 100;
+                per.Mana = 100;
+                per.Defensa = GenerateEstRandom();
+                per.Fuerza = GenerateEstRandom();
             }
             else
             {
                 Console.Clear();
-                Console.WriteLine($"Ingrese el Nombre del {personaje.Nombre}:");
-                personaje.Nombre = Console.ReadLine();
-                Console.WriteLine($"Ingrese el Color (hexadecimal) de {personaje.Nombre}:");
-                personaje.Color = Console.ReadLine();
-                Console.WriteLine($"Ingrese la Vida de {personaje.Nombre}:");
-                personaje.Vida = int.Parse(Console.ReadLine());
-                Console.WriteLine($"Ingrese la Defensa de {personaje.Nombre}:");
-                personaje.Defensa = int.Parse(Console.ReadLine());
-                Console.WriteLine($"Ingrese la Fuerza de {personaje.Nombre}:");
-                personaje.Fuerza = int.Parse(Console.ReadLine());
-                Console.WriteLine($"Ingrese el Mana de {personaje.Nombre}:");
-                personaje.Mana = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese el Nombre del {per.Nombre}:");
+                per.Nombre = Console.ReadLine();
+                Console.WriteLine($"Ingrese el Color (hexadecimal) de {per.Nombre}:");
+                per.Color = Console.ReadLine();
+                Console.WriteLine($"Ingrese la Vida de {per.Nombre}:");
+                per.Vida = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese la Defensa de {per.Nombre}:");
+                per.Defensa = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese la Fuerza de {per.Nombre}:");
+                per.Fuerza = int.Parse(Console.ReadLine());
+                Console.WriteLine($"Ingrese el Mana de {per.Nombre}:");
+                per.Mana = int.Parse(Console.ReadLine());
             }
-            personaje.inventario = null;
-            personaje.ManaMax = personaje.Mana;
-            personaje.VidaMax = personaje.Vida;
+            per.inventario = new Inventario();
+            per.inventario.personaje = per;
+            per.ManaMax = per.Mana;
+            per.VidaMax = per.Vida;
         }
         static void VamoAJugar(Personaje Jugador, Personaje Enemigo)
         {
@@ -111,7 +113,6 @@ namespace Clases___3_4
         {
             Console.Clear();
             EstadisticasPersonaje(p1);
-            Console.WriteLine();
             EstadisticasPersonaje(p2);
             Console.ReadKey();
             Console.Clear();
@@ -149,14 +150,7 @@ namespace Clases___3_4
                     p1.AumentarEstadisticas();
                     break;
                 case 5:
-                    if (p1.inventario.items != null)
-                    {
-                        int ObjID = MostrarMenu(MostrarInventario(p1.inventario, true), "Seleccione el Objeto a Utilizar:");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"[{p1.Nombre}]: No tiene niguna poción.");
-                    }
+                    InventoryLogic(p1);
                     break;
                 case 6:
                     MenuDebug(p1, p2);
@@ -167,6 +161,41 @@ namespace Clases___3_4
             }
             Console.ReadKey();
         }
+
+        private static void InventoryLogic(Personaje p)
+        {
+            int CantItems = p.inventario.items.Count;
+            if (CantItems > 0)
+            {
+
+                int ObjID = 0;
+
+                if (p.EsEnemigo)
+                {
+                    ObjID = new Random().Next(0, CantItems++);
+                }
+                else
+                {
+                    ObjID = MostrarMenu(MostrarInventario(p.inventario, true), "Seleccione el Objeto a Utilizar:");
+                }
+
+                if (p.inventario.items[ObjID] is EsPocion pocion)
+                {
+                    if (pocion.Usar(p))
+                    {
+                        p.inventario.QuitarItem(p.inventario.items[ObjID]);
+                    }
+                    else {
+                        Console.WriteLine($"[{p.Nombre}]: No puede utilizar la poción");
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine($"[{p.Nombre}]: No tiene niguna poción.");
+            }
+        }
+
         static void EstadisticasPersonaje(Personaje personaje)
         {
             Console.WriteLine($"Estadisticas del {personaje.Nombre}");
@@ -175,11 +204,7 @@ namespace Clases___3_4
             Console.WriteLine($"Defensa: {personaje.Defensa.ToString()}");
             Console.WriteLine($"Fuerza: {personaje.Fuerza.ToString()}");
             Console.WriteLine($"Color: {personaje.Color}");
-            if (personaje.inventario != null) {
-                Console.Clear();
-                MostrarInventario(personaje.inventario);
-                Console.ReadKey();
-            }
+            MostrarInventario(personaje.inventario);
         }
         static void MenuDebug(Personaje personaje, Personaje enemigo)
         {
@@ -220,6 +245,9 @@ namespace Clases___3_4
         }
         static bool StartMenu()
         {
+            // Colores Incio
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Clear();
             string ASCIIMenu = @"
  _______ _________ _______ _________   _______ _________ _______          _________ _______  _______  _______ 
@@ -236,6 +264,9 @@ namespace Clases___3_4
             Console.WriteLine("Presione cualquier tecla para continuar...");
             Console.ReadKey();
             Console.Clear();
+            // Regresar Colores Normales
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
             bool Condicion = (0 == MostrarMenu(ConditionalMenu, "Deseas Generar las Estadisticas Aleatoriamente"));
             return Condicion;
         }
@@ -255,6 +286,7 @@ namespace Clases___3_4
 
         static PocionBase CrearPocion(bool tipo)
         {
+            Console.Clear();
             Console.WriteLine("Ingrese el Minimo a curar de la pocion:");
             int min = int.Parse(Console.ReadLine());
             Console.WriteLine("Ingrese el Maximo a curar de la pocion:");
@@ -263,37 +295,46 @@ namespace Clases___3_4
             if (tipo)
             {
                 PocionVida pocionVida = new PocionVida(min, max);
+                pocionVida.Descripcion = $"Pocion de Vida ({pocionVida.Min}/{pocionVida.Max})";
                 return pocionVida;
             }
             else
             {
                 PocionMana pocionMana = new PocionMana(min, max);
+                pocionMana.Descripcion = $"Pocion de Mana ({pocionMana.Min}/{pocionMana.Max})";
                 return pocionMana;
             }
         }
 
         static string[] MostrarInventario(Inventario inv, bool Devolver = false) {
+            int ItemCant = inv.items.Count;
+            if (ItemCant == 0) {
+                Console.WriteLine();
+                return null;
+            }
             if (Devolver)
             {
-                int x = inv.items.Count;
-                string[] DesItem = new string[x];
-                x = 0;
+                string[] DesItem = new string[ItemCant];
+                int i = 0;
                 foreach (Item item in inv.items)
                 {
-                    DesItem[x] = item.Descripcion;
-                    x++;
+                    DesItem[i] = item.Descripcion;
+                    i++;
                 }
                 return DesItem;
             }
             else {
+                Console.ReadKey();
+                Console.Clear();
                 Console.WriteLine("Inventario:");
                 foreach (Item item in inv.items)
                 {
                     Console.WriteLine($"> {item.Descripcion}");
                 }
+                Console.ReadKey();
+                Console.Clear();
             }
             return null;
-            
         }
 
         // Funcion de otro repositiorio de mi persona

@@ -12,6 +12,7 @@ namespace Clases___3_4
         public override bool Usar(Personaje personaje) //El parametro override se utiliza para indicar que el metodo que definimos va a tener un comportamiento distinto al de la clase base
         {
             if (personaje.Vida >= personaje.VidaMax) return false;
+            Console.Clear();
             int Cura = new Random().Next(Min, Max++);
             if (personaje.VidaMax < Cura + personaje.Vida)
             {

@@ -11,6 +11,7 @@ namespace Clases___3_4
     {
 
         public string Nombre { get; set; }
+        public bool EsEnemigo { get; set; }
         public string Color { get; set; }
         public int Vida { get; set; }
         public int Defensa { get; set; }
@@ -20,8 +21,10 @@ namespace Clases___3_4
         public int ManaMax { get; set; }
         public Inventario inventario { get; set; }
 
-        public Personaje(string nombre) {
+        public Personaje(string nombre, bool Enemigo = false)
+        {
             Nombre = nombre;
+            EsEnemigo = Enemigo;
         }
 
         public bool Atacar(Personaje personaje) {
